@@ -34,7 +34,7 @@
     "json3": "~3.2.5",
     "lodash": "~3.10.x",
     "ovh-utils-angular": "^12.0.0",
-    "ovh-module-exchange": "^5.0.0",
+    "ovh-module-exchange": "#feat\/wizard-hosted-creation",
     "ovh-module-sharepoint": "^3.0.0",
     "ovh-module-office": "^3.0.0",
     "ovh-module-emailpro": "^3.0.0",
