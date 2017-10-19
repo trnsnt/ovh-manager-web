@@ -1,181 +1,102 @@
-angular.module("services").service("Products", [
-    "$rootScope",
-    "$http",
-    "$q",
-    "constants",
-    "$stateParams",
-    "AllDom",
-    "Emails",
-    function ($rootScope, $http, $q, constants, $stateParams, AllDom, Emails) {
-        "use strict";
+angular.module("services").service(
+    "Products",
+    class Products {
 
-        let products = null;
-        let productsByType = null;
-        let selectedProduct = {
-            name: "",
-            organization: "",
-            type: ""
-        };
+        constructor ($rootScope, OvhHttp, $q, constants, $stateParams, AllDom, Emails) {
+            this.$rootScope = $rootScope;
+            this.OvhHttp = OvhHttp;
+            this.$q = $q;
+            this.constants = constants;
+            this.$stateParams = $stateParams;
+            this.AllDom = AllDom;
+            this.Emails = Emails;
 
-        const requests = {
-            productsList: null
-        };
+            this.cache = {
+                products: "UNIVERS_WEB_PRODUCTS"
+            };
 
-        function resetCache () {
-            products = null;
-            productsByType = null;
-            requests.productsList = null;
+            this.selectedProduct = {
+                name: "",
+                organization: "",
+                type: ""
+            };
+
+            this.getProducts(true);
         }
 
         /*
-         * get product by SWS
+         * Get all products arranged by type
          */
-        this.getProducts = function (forceRefresh) {
-            if (forceRefresh === true) {
-                resetCache();
-            }
-            return $q
-                .when(true)
-                .then(() => {
-                    if (products) {
-                        return products;
-                    }
-
-                    if (requests.productsList !== null) {
-                        return requests.productsList;
-                    }
-
-                    requests.productsList = $q
-                        .all([
-                            $http.get("/sws/products", {
-                                serviceType: "aapi",
-                                params: {
-                                    universe: constants.universe || "WEB",
-                                    worldPart: constants.target
-                                }
-                            }),
-                            AllDom.getAllDoms(true),
-                            Emails.getDelegatedEmails()
-                        ])
-                        .then((data) => this.concatProducts(data));
-                })
-                .then(() => products, (reason) => $q.reject(reason));
-        };
-
-        this.concatProducts = function (data) {
-            const result = data[0];
-            const allDoms = data[1];
-
-            if (result.status >= 300) {
-                return $q.reject(data);
-            }
-
-            productsByType = result.data;
-
-            _.forEach(data[2], (email) => {
-                const splitted = email.split("@");
-                if (splitted.length >= 2) {
-                    if (_.find(productsByType.emails, { name: splitted[1] }) == null) {
-                        const domain = splitted[1];
-                        productsByType.emails.push({
-                            displayName: domain,
-                            hasSubComponent: false,
-                            name: domain,
-                            type: "EMAIL_DELEGATE",
-                            delegate: true
-                        });
-                    }
-                }
-            });
-
-            /* Exchange 25g */
-            if (productsByType && productsByType.platforms && productsByType.platforms.length) {
-                // 1. Remove all occurances and put them in other var
-                let exchangeOld = _.remove(productsByType.platforms, (a) => a.type === "EXCHANGE_OLD");
-                if (exchangeOld && exchangeOld.length) {
-                    // 2. Merge all domain to an uniq array
-                    exchangeOld = _.uniq(exchangeOld, (a) => a.name);
-
-                    // 3. Push to products array
-                    productsByType.platforms = productsByType.platforms.concat(exchangeOld);
-                }
-            }
-
-            if (!products) {
-                products = [];
-            }
-
-            if (!allDoms || allDoms.length <= 0) {
-                ["domains", "hostings", "exchanges", "sharepoints", "vps", "cdns", "emails", "licenseOffice", "emailPros"].forEach((type) => {
-                    products = products.concat(productsByType[type] || []);
-                });
-
-                return products;
-            }
-
-            return this.handleAllDoms(allDoms);
-        };
-
-        this.handleAllDoms = function (allDoms) {
-            let productDomains = [];
-            const allDomains = _.pluck(productsByType.domains, "name");
-            const allDomainsOnly = _.pluck(productsByType.domains.filter((x) => x.type === "DOMAIN"), "name");
-            const allZones = _.pluck(productsByType.domains.filter((x) => x.type === "ZONE" && allDomainsOnly.indexOf(x.name) === -1), "name");
-
-            productsByType.allDoms = [];
-            return $q
-                .allSettled(
-                    allDoms.map((allDom) =>
-                        AllDom.getDomains(allDom).then(
-                            (domains) => {
-                                productDomains = productDomains.concat(allDomains.filter((d) => !~domains.indexOf(d)));
-
-                                productsByType.allDoms.push({
-                                    name: allDom,
-                                    displayName: allDom,
-                                    hasSubComponent: true,
-                                    type: "ALL_DOM",
-                                    subProducts: _.intersection(allDomains, domains).map((d) => ({
-                                        name: d,
-                                        displayName: d,
-                                        allDomName: allDom,
-                                        allDomZoneOnly: allZones.indexOf(d) !== -1,
-                                        type: allZones.indexOf(d) !== -1 ? "ZONE" : "ALL_DOM"
-                                    }))
-                                });
-                            },
-                            (err) => ({ error: err, allDom })
-                        )
-                    )
-                )
-                .then(() => {
-                    if (productsByType.allDoms.length > 0) {
-                        const d = productsByType.domains.filter((domain) => ~productDomains.indexOf(domain.name));
-
-                        productsByType.domains = productsByType.allDoms.concat(_.sortBy(d, (elt) => elt.name));
-                    }
-
-                    ["domains", "hostings", "exchanges", "sharepoints", "vps", "cdns", "emails", "licenseOffice", "allDoms", "emailPros"].forEach((type) => {
-                        products = products.concat(productsByType[type] || []);
-                    });
-
-                    return products;
-                });
-        };
+        getProducts (forceRefresh = false) {
+            return this.OvhHttp.get("/service", {
+                rootPath: "apiv7",
+                params: {
+                    $expand: true
+                },
+                cache: this.cache.products,
+                forceRefresh
+            }).then((result) => this._arrangeProductsByType(result));
+        }
 
         /*
-         * Get list of products orderBy Type
+         * Format API response to arrange products by their type
          */
-        this.getProductsByType = function () {
-            return this.getProducts().then(() => productsByType);
-        };
+        _arrangeProductsByType (result) {
+            const categories = {
+                domains: [
+                    { name: "DOMAIN", route: "/domain/{serviceName}" },
+                    { name: "ZONE", route: "/domain/zone/{zoneName}" }
+                ],
+                hostings: [
+                    { name: "HOSTING", route: "/hosting/web/{serviceName}" },
+                    { name: "PRIVATE_DATABASE", route: "/hosting/privateDatabase/{serviceName}" }
+                ],
+                emails: [
+                    { name: "EMAIL_DOMAIN", route: "/email/domain/{domain}" },
+                    { name: "EMAIL_DELEGATE", route: "" }
+                ],
+                emailPros: [
+                    { name: "EMAIL_PRO", route: "/email/pro/{service}" }
+                ],
+                licenseOffice: [
+                    { name: "LICENSE_OFFICE", route: "/license/office/{serviceName}" }
+                ],
+                sharepoints: [
+                    { name: "SHAREPOINT", route: "/msServices/sharepoint/{domain}" }
+                ],
+                exchanges: [
+                    { name: "EXCHANGE_PROVIDER", route: "" },
+                    { name: "EXCHANGE_HOSTED", route: "/email/exchange/{organizationName}/service/{exchangeService}" },
+                    { name: "EXCHANGE", route: "" },
+                    { name: "EXCHANGE_DEDICATED", route: "" }
+                ],
+                vps: [],
+                cdns: [],
+                allDoms: [
+                    { name: "ALL_DOM", route: "" }
+                ]
+            };
+
+            const types = _.flatten(_.map(categories));
+
+            const typedProducts = _.map(result, (p) => {
+                const type = _.find(types, (t) => t.route === _.get(p, "value.route.path"));
+                return {
+                    name: _.get(p, "value.resource.name", ""),
+                    displayName: _.get(p, "value.resource.displayName", ""),
+                    type: _.get(type, "name")
+                };
+            });
+
+            return _.mapValues(categories, (category) => _.filter(typedProducts, (product) => _.some(category, (type) => type.name === product.type)));
+        }
 
         /*
          * Get the selected product
          */
-        this.getSelectedProduct = function (forceRefresh) {
+        getSelectedProduct (forceRefresh) {
             if (forceRefresh) {
-                selectedProduct = {
+                this.selectedProduct = {
                     name: "",
                     organization: "",
                     type: ""
@@ -189,18 +110,18 @@ angular.module("services").service("Products", [
                     type: ""
                 };
 
-                if ($.isEmpty(selectedProduct.name)) {
-                    selectedProduct.name = $stateParams.productId ? $stateParams.productId : "";
-                    selectedProduct.type = $rootScope.currentSectionInformation ? $rootScope.currentSectionInformation.toUpperCase() : null;
-                    selectedProduct.organization = $stateParams.organization ? $stateParams.organization : "";
+                if ($.isEmpty(this.selectedProduct.name)) {
+                    this.selectedProduct.name = this.$stateParams.productId ? this.$stateParams.productId : "";
+                    this.selectedProduct.type = this.$rootScope.currentSectionInformation ? this.$rootScope.currentSectionInformation.toUpperCase() : null;
+                    this.selectedProduct.organization = this.$stateParams.organization ? this.$stateParams.organization : "";
 
-                    if (selectedProduct.name === "") {
+                    if (this.selectedProduct.name === "") {
                         return emptyProduct;
                     }
                 }
 
                 const found = _.find(prods, (prod) => {
-                    const check = (p) => p.name === selectedProduct.name && p.type === selectedProduct.type;
+                    const check = (p) => p.name === this.selectedProduct.name && p.type === this.selectedProduct.type;
 
                     if (check(prod)) {
                         return prod;
@@ -213,52 +134,50 @@ angular.module("services").service("Products", [
 
                 return found || emptyProduct;
             });
-        };
+        }
 
         /*
          * set the selected product by Id
          */
-        this.setSelectedProduct = function (product) {
+        setSelectedProduct (product) {
             if (product) {
                 if (angular.isString(product)) {
-                    selectedProduct.name = product;
+                    this.selectedProduct.name = product;
                 } else if (angular.isObject(product)) {
                     if (product.name === "" && product.type === "") {
-                        selectedProduct = product;
+                        this.selectedProduct = product;
                     } else {
-                        selectedProduct.name = product.name;
-                        selectedProduct.type = product.type;
+                        this.selectedProduct.name = product.name;
+                        this.selectedProduct.type = product.type;
                     }
                 }
             }
 
             return this.getSelectedProduct().then((p) => {
-                selectedProduct.type = p.type;
-                $rootScope.$broadcast("changeSelectedProduct", p);
+                this.selectedProduct.type = p.type;
+                this.$rootScope.$broadcast("changeSelectedProduct", p);
                 return p;
             });
-        };
+        }
 
         /*
          * set the selected product by Id
          */
-        this.removeSelectedProduct = function () {
+        removeSelectedProduct () {
             return this.setSelectedProduct({
                 name: "",
                 type: ""
             }).then((p) => {
-                $rootScope.$broadcast("removeSelectedProduct");
+                this.$rootScope.$broadcast("removeSelectedProduct");
                 return p;
             });
-        };
+        }
 
         /**
          * Get working-status for the specified product
          */
-        this.getWorks = function (product) {
-            return $http.get(`${constants.aapiRootPath}working-status/${product}`).then((resp) => resp.data);
-        };
-
-        this.getProducts(true);
+        getWorks (product) {
+            return this.OvhHttp.get(`${this.constants.aapiRootPath}working-status/${product}`).then((resp) => resp.data);
+        }
     }
-]);
+);

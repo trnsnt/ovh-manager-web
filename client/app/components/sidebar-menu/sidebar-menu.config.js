@@ -315,7 +315,7 @@ angular.module("App").run(($q, SidebarMenu, Products, User, constants, translato
         });
     }
 
-    const productsPromise = Products.getProductsByType()
+    const productsPromise = Products.getProducts()
         .then((products) => $q.all(addDomainItems(products),
                                    addHostingItems(products),
                                    addDatabaseItems(products),
