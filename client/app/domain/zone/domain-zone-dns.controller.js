@@ -117,8 +117,8 @@ angular.module("App").controller(
                     activated = err[1];
                 })
                 .finally(() => {
-                    this.defaultsDns = _.get(defaults, "paginatedZone.records.results").filter((data) => data.subDomain === "" && data.subDomainToDisplay === "").map((value) => value.targetToDisplay.slice(0, -1)).sort();
-                    this.activatedDns = _.get(activated, "dns").filter((dns) => dns.isUsed).map((value) => value.host).sort();
+                    this.defaultsDns = _.get(defaults, "paginatedZone.records.results", []).filter((data) => data.subDomain === "" && data.subDomainToDisplay === "").map((value) => value.targetToDisplay.slice(0, -1)).sort();
+                    this.activatedDns = _.get(activated, "dns", []).filter((dns) => dns.isUsed).map((value) => value.host).sort();
 
                     if (!_.isEmpty(this.defaultsDns) && !_.isEqual(this.defaultsDns, this.activatedDns)) {
                         this.useDefaultsDns = false;
@@ -138,27 +138,27 @@ angular.module("App").controller(
                     if (_.get(tabZone, "paginatedZone.records.results", []).length > 0) {
                         this.hasResult = true;
                     }
-                    this.dontDisplayActivateZone = false;
+                    this.displayActivateZone = false;
                     this.applySelection();
-                    return this.Domain.getZoneStatus(this.domain.name).catch((err) => this.Alerter.alertFromSWS(this.$scope.tr("domain_dashboard_loading_error"), err, this.$scope.alerts.dashboard));
+                    return this.Domain.getZoneStatus(this.domain.name).catch((err) => this.Alerter.alertFromSWS(this.$scope.tr("domain_dashboard_loading_error"), err, this.$scope.alerts.main));
                 })
                 .then((data) => {
                     this.zoneStatusErrors = (data && !data.isDeployed && _.get(data, "errors", [])) || [];
                     this.zoneStatusWarnings = _.get(data, "warnings", []);
                 })
                 .catch((err) => {
-                    this.dontDisplayActivateZone = true;
-                    if (err.data && /service(\s|\s\w+\s)expired/i.test(err.data.message)) {
+                    if (/service(\s|\s\w+\s)expired/i.test(_.get(err, "data.message", err.message || ""))) {
                         // A service expired here, is a temporary status, display the message: "service expired" in the page as general message is very confusing for customers.
                         // A message like: "no DNS zone" is already displayed at the good place. So, get out.
+                        this.displayActivateZone = false;
                         return;
                     }
 
                     // For Domain with no DNS zone.
-                    if (!err.status || err.status !== 404) {
-                        this.Alerter.alertFromSWS(this.$scope.tr("domain_dashboard_loading_error"), err.data, this.$scope.alerts.dashboard);
+                    if (err.code && err.code === 404) {
+                        this.displayActivateZone = true;
                     } else {
-                        this.dontDisplayActivateZone = false;
+                        this.Alerter.alertFromSWS(this.$scope.tr("domain_dashboard_loading_error"), _.get(err, "data", err), this.$scope.alerts.main);
                     }
                 })
                 .finally(() => {
@@ -252,9 +252,9 @@ angular.module("App").controller(
                 })
                 .then(() => {
                     this.cancelAddRecord();
-                    this.Alerter.success(this.$scope.tr("domain_configuration_dns_entry_add_success"), this.$scope.alerts.dashboard);
+                    this.Alerter.success(this.$scope.tr("domain_configuration_dns_entry_add_success"), this.$scope.alerts.main);
                 })
-                .catch((err) => this.Alerter.alertFromSWS(this.$scope.tr("domain_configuration_dns_entry_add_fail"), err, this.$scope.alerts.dashboard))
+                .catch((err) => this.Alerter.alertFromSWS(this.$scope.tr("domain_configuration_dns_entry_add_fail"), err, this.$scope.alerts.main))
                 .finally(() => {
                     this.loading.adding = false;
                 });
