@@ -64,6 +64,7 @@
                                 <th scope="row" data-i18n-static="hosting_configuration_tab_modules_module_path"></th>
                                 <th scope="row" data-i18n-static="hosting_configuration_tab_modules_module_version"></th>
                                 <th scope="row" data-i18n-static="hosting_configuration_tab_modules_module_login"></th>
+                                <th scope="row" data-i18n-static="hosting_configuration_tab_modules_module_status"></th>
                                 <th class="min-width" scope="row"></th>
                             </tr>
                             </thead>
@@ -83,6 +84,7 @@
                                 <td data-ng-bind="::module.path"></td>
                                 <td data-ng-bind="::module.template.version"></td>
                                 <td data-ng-bind="::module.adminName"></td>
+                                <td data-ng-bind="::module.status"></td>
                                 <td class="text-center">
                                     <button class="btn btn-icon" type="button" title="{{::module.template.name}} {{i18n.hosting_configuration_tab_modules_module_config}}"
                                             data-linkedpopover="hosting/popover/module.html"
