@@ -73,7 +73,7 @@
                                 <th scope="row">
                                     <div class="d-flex justify-content-between">
                                         <a data-ng-href="http://{{module.targetUrl}}" target="_blank" title="{{i18n.hosting_configuration_tab_modules_module_access}} {{module.template.name}} {{i18n.hosting_common_target_new_window}}"
-                                           data-ng-bind="::module.template.name">
+                                           data-ng-bind="module.template.name">
                                         </a>
                                         <a target="_blank" title="{{i18n.hosting_configuration_tab_modules_module_access_admin}} {{module.template.name}} {{i18n.hosting_common_target_new_window}}"
                                            data-ng-href="http://{{module.targetUrl}}/{{module.adminFolder}}">
@@ -81,12 +81,18 @@
                                         </a>
                                     </div>
                                 </th>
-                                <td data-ng-bind="::module.path"></td>
-                                <td data-ng-bind="::module.template.version"></td>
-                                <td data-ng-bind="::module.adminName"></td>
-                                <td data-ng-bind="::module.status"></td>
+                                <td data-ng-bind="module.path"></td>
+                                <td data-ng-bind="module.template.version"></td>
+                                <td data-ng-bind="module.adminName"></td>
+                                <td>
+                                    <span class="label"
+                                          data-ng-bind="i18n['hosting_configuration_tab_modules_module_status_' + module.status] || module.status"
+                                          data-ng-class="{'label-success': module.status === 'created',
+                                                          'label-warning': _.includes(['deleting', 'updating', 'creating'], module.status)}">
+                                    </span>
+                                </td>
                                 <td class="text-center">
-                                    <button class="btn btn-icon" type="button" title="{{::module.template.name}} {{i18n.hosting_configuration_tab_modules_module_config}}"
+                                    <button class="btn btn-icon" type="button" title="{{module.template.name}} {{i18n.hosting_configuration_tab_modules_module_config}}"
                                             data-linkedpopover="hosting/popover/module.html"
                                             data-linkedpopover-placement="left"
                                             data-linkedpopover-single="true"

@@ -757,6 +757,10 @@
    <translation id="hosting_configuration_tab_modules_module_version" qtlid="34210">Version</translation>
    <translation id="hosting_configuration_tab_modules_module_login" qtlid="41062">Login</translation>
    <translation id="hosting_configuration_tab_modules_module_status">Status</translation>
+   <translation id="hosting_configuration_tab_modules_module_status_created">Ok</translation>
+   <translation id="hosting_configuration_tab_modules_module_status_creating">Création en cours...</translation>
+   <translation id="hosting_configuration_tab_modules_module_status_updating">Modification en cours...</translation>
+   <translation id="hosting_configuration_tab_modules_module_status_deleting">Suppression en cours...</translation>
    <translation id="hosting_configuration_tab_modules_module_add" qtlid="198831">Ajouter un module</translation>
    <translation id="hosting_configuration_tab_modules_module_config" qtlid="402763">: gestion du module</translation>
    <translation id="hosting_configuration_tab_modules_module_delete" qtlid="198844">Supprimer le module</translation>
