@@ -88,7 +88,7 @@
                                     <span class="label"
                                           data-ng-bind="i18n['hosting_configuration_tab_modules_module_status_' + module.status] || module.status"
                                           data-ng-class="{'label-success': module.status === 'created',
-                                                          'label-warning': _.includes(['deleting', 'updating', 'creating'], module.status)}">
+                                                          'label-warning': isIn(['deleting', 'updating', 'creating'], module.status)}">
                                     </span>
                                 </td>
                                 <td class="text-center">
@@ -97,7 +97,8 @@
                                             data-linkedpopover-placement="left"
                                             data-linkedpopover-single="true"
                                             data-linkedpopover-remote="true"
-                                            data-linkedpopover-title="{{i18n.common_actions}}">
+                                            data-linkedpopover-title="{{i18n.common_actions}}"
+                                            data-ng-if="module.status === 'created'">
                                         <span class="oui-icon oui-icon-gear_line oui-icon_small" aria-hidden="true"></span>
                                     </button>
                                 </td>

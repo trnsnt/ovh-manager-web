@@ -22,6 +22,8 @@ angular.module("App").controller(
                 this.loadTab(true);
             });
 
+            this.$scope.isIn = (list, element) => _.includes(list, element);
+
             this.productId = this.$stateParams.productId;
 
             this.Hosting.getSelected(this.productId)
