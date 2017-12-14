@@ -114,8 +114,7 @@
              */
             getModule (serviceName, id) {
                 return this.OvhHttp.get(`/hosting/web/${serviceName}/module/${id}`, {
-                    rootPath: "apiv6",
-                    cache: cache.installedModule
+                    rootPath: "apiv6"
                 });
             }
 

@@ -14,7 +14,9 @@ angular.module("App").controller(
 
         $onInit () {
             this.modules = {
-                details: []
+                ids: [],
+                details: [],
+                refresh: 0
             };
             this.loading = true;
 
@@ -47,14 +49,14 @@ angular.module("App").controller(
 
         initPolling () {
             this.Polling
-                .startPolling(`/hosting/web/${this.productId}/module`, 5000, (ids) => {
+                .startPolling(`/hosting/web/${this.productId}/module`, 15000, (ids) => {
                     this.modules.ids = ids;
+                    this.modules.refresh ^= 1; // toggle refresh between 0 and 1
                 });
         }
 
         loadTab (forceRefresh) {
             this.loading = true;
-            this.modules.ids = null;
 
             return this.HostingModule.getModules(this.productId, { forceRefresh })
                 .then((data) => {
@@ -64,7 +66,10 @@ angular.module("App").controller(
                     this.Alerter.alertFromSWS(this.$scope.tr("hosting_configuration_tab_modules_create_step1_loading_error"), err, this.$scope.alerts.main);
                 })
                 .finally(() => {
-                    this.loading = false;
+                    // remove the loader immediately if there are no elements to display
+                    if (_.isEmpty(this.modules.ids)) {
+                        this.loading = false;
+                    }
                 });
         }
 
