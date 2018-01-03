@@ -3,31 +3,44 @@ angular
     .service("Polling", class Polling {
 
         constructor (OvhHttp, $interval) {
-            this.OvhHttp = OvhHttp;
             this.Interval = $interval;
 
-            this.pollers = {};
+            this.pollers = [];
         }
 
-        startPolling (path, interval, callback, errorCallback) {
-
-            if (_.has(this.pollers, path)) {
-                console.warn(`A polling task is already running for "${path}".`);
-                return;
+        startPolling (method, interval) {
+            if (_.any(this.pollers, (p) => p.method === method)) {
+                const err = new Error(`A polling task is already running for "${method}".`);
+                err.type = "PollingAlreadyExistsError";
+                return Promise.reject(err);
             }
 
-            this.pollers[path] = this.Interval(() => {
-                this.OvhHttp.get(path, {
-                    rootPath: "apiv6"
-                })
-                .then(callback)
-                .catch((err) => {
-                    if (errorCallback) {
-                        errorCallback(err);
-                    }
-                    this.Interval.cancel(this.pollers[path]);
-                    delete this.pollers[path];
-                });
-            }, interval);
+            const poller = {
+                method
+            };
+            const promise = this.Interval(method, interval);
+
+            // we need to keep this id, it is overwritten by further promise chaining,
+            // but the cancel method needs it.
+            poller.id = promise.$$intervalId;
+
+            poller.promise = promise.finally(() => {
+                this.stopPolling(poller);
+            });
+
+            this.pollers.push(poller);
+            return poller;
+        }
+
+        stopPolling (poller) {
+            _.remove(this.pollers, poller);
+
+            // reset the internal promise id in case it was overwritten
+            poller.promise.$$intervalId = poller.id;
+            this.Interval.cancel(poller.promise);
+        }
+
+        isPollingAlreadyExistsError (error) {
+            return error.type && error.type === "PollingAlreadyExistsError";
         }
     });

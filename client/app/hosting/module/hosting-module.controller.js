@@ -21,7 +21,7 @@ angular.module("App").controller(
             this.loading = true;
 
             this.$scope.$on("hosting.tabs.modules.refresh", () => {
-                this.loadTab(true);
+                this.loadModules(true);
             });
 
             this.$scope.isIn = (list, element) => _.includes(list, element);
@@ -43,21 +43,21 @@ angular.module("App").controller(
                     }
                 });
 
-            this.loadTab()
-                .then(() => this.initPolling());
-        }
-
-        initPolling () {
-            this.Polling
-                .startPolling(`/hosting/web/${this.productId}/module`, 15000, (ids) => {
-                    this.modules.ids = ids;
-                    this.modules.refresh ^= 1; // toggle refresh between 0 and 1
+            this.loadModules(true);
+            this.poller = this.Polling.startPolling(() => this.loadModules(true), 5000);
+            this.poller.promise
+                .catch((err) => {
+                    if (!this.Polling.isPollingAlreadyExistsError(err)) {
+                        throw err;
+                    }
                 });
         }
 
-        loadTab (forceRefresh) {
-            this.loading = true;
+        $onDestroy () {
+            this.Polling.stopPolling(this.poller);
+        }
 
+        loadModules (forceRefresh) {
             return this.HostingModule.getModules(this.productId, { forceRefresh })
                 .then((data) => {
                     this.modules.ids = data;
@@ -66,10 +66,7 @@ angular.module("App").controller(
                     this.Alerter.alertFromSWS(this.$scope.tr("hosting_configuration_tab_modules_create_step1_loading_error"), err, this.$scope.alerts.main);
                 })
                 .finally(() => {
-                    // remove the loader immediately if there are no elements to display
-                    if (_.isEmpty(this.modules.ids)) {
-                        this.loading = false;
-                    }
+                    this.loading = false;
                 });
         }
 
@@ -80,10 +77,6 @@ angular.module("App").controller(
                         module.template = template;
                         return module;
                     }));
-        }
-
-        onTransformItemDone () {
-            this.loading = false;
         }
     }
 );

@@ -115,8 +115,8 @@
                              data-current-page="currentPage"
                              data-nb-pages="nbPages"
                              data-items-per-page="itemsPerPage"
+                             data-refresh-timeout="5000"
                              data-transform-item="ctrlHostingTabModules.transformItem(item)"
-                             data-on-transform-item-done="ctrlHostingTabModules.onTransformItemDone(items)"
                              data-page-placeholder="{{tr('pagination_page', [currentPage, nbPages])}}"
                              data-item-per-page-placeholder="{{tr('pagination_display')}}"
                              data-ng-show="!ctrlHostingTabModules.loading && ctrlHostingTabModules.modules.details.length > 0">
