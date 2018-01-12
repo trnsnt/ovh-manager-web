@@ -232,6 +232,10 @@
    <translation id="hosting_dashboard_database_active_error" qtlid="260351">Une erreur est survenue lors de la demande d'activation de votre base de données privée.</translation>
    <translation id="hosting_dashboard_database_versions_error" qtlid="260364">Une erreur est survenue lors de la récupération des versions disponibles des bases de données privées.</translation>
 
+   <translation id="hosting_dashboard_local_referencing">Référencement local</translation>
+   <translation id="hosting_dashboard_local_referencing_manage">Gérer</translation>
+   <translation id="hosting_dashboard_local_referencing_order">Commander</translation>
+
    <translation id="hosting_tab_CRON" qtlid="196660">Cron</translation>
    <translation id="hosting_tab_CRON_guide_help" qtlid="271504">Besoin d'aide pour configurer vos tâches planifiées ?</translation>
    <translation id="hosting_guide_help" qtlid="156732">Consultez nos guides en ligne.</translation>
