@@ -54,8 +54,8 @@ help:
 	$(ECHO) "make install                                                       => install deps"
 	$(ECHO) "make dev                                                           => launch the project (development)"
 	$(ECHO) "make prod                                                          => launch the project (production) - For testing purpose only"
-	$(ECHO) "make test                                                          => launch the tests"
-	$(ECHO) "make test-e2e suite=smoke|full browser=phantomjs|chrome|firefox    => launch the e2e tests"
+	$(ECHO) "make test                                                          => launch all the tests"
+	$(ECHO) "make test-smoke                                                    => launch only the basic smoke tests"
 	$(ECHO) "make coverage                                                      => launch the coverage"
 	$(ECHO) "make build                                                         => build the project and generate dist"
 	$(ECHO) "make release type=patch|minor|major                                => build the project, generate build folder, increment release and commit the source"
@@ -118,25 +118,19 @@ release: deps
 
 TEST_REPORTS=test-reports
 
-test: deps
+test: deps webdriver
 	$(GRUNT) test
+	$(MAKE) tar-test-reports
+
+test-smoke: deps webdriver
+	$(GRUNT) test:smoke
+	$(MAKE) tar-test-reports
 
 coverage: deps
 	$(GRUNT) test:coverage:unit
 
 webdriver:
 	$(NPM) run update-webdriver
-
-test-e2e: deps webdriver
-	$(GRUNT) test:e2e --suite=$(suite) --browser=$(browser); \
-	if [ $$? = 0 ]; \
-	then \
-	$(MAKE) tar-test-reports; \
-	exit 0; \
-	else \
-	$(MAKE) tar-test-reports; \
-	exit 2; \
-	fi
 
 tar-test-reports:
 	$(TAR) $(TEST_REPORTS).tar.gz $(TEST_REPORTS)

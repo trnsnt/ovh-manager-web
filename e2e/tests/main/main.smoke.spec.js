@@ -16,13 +16,13 @@ describe("MANAGER: WEB", function () {
 
         beforeAll(function () {
             originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-            jasmine.DEFAULT_TIMEOUT_INTERVAL = 120000;
+            jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
         });
 
         it("should login.", function (done) {
             // Because login page is not in Angular.
             browser.ignoreSynchronization = true;
-            browser.get(config.baseUrl + "/login/")
+            browser.get("/auth/")
                 .then(function () {
                     return browser.wait(
                         EC.presenceOf(page.loginEl),
@@ -43,7 +43,7 @@ describe("MANAGER: WEB", function () {
         });
 
         it("should test if NIC is present.", function (done) {
-            browser.get(config.baseUrl)
+            browser.get("/")
                 .then(function () {
                     return browser.wait(EC.presenceOf(page.nicEl));
                 })

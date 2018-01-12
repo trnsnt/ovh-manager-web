@@ -825,11 +825,19 @@ module.exports = function (grunt) {
             options: {
                 configFile: "protractor.conf.js"
             },
-            browser: {
+            smoke: {
                 options: {
                     args: {
-                        browser: grunt.option("browser") || "phantomjs",
-                        suite: grunt.option("suite") || "full"
+                        browser: grunt.option("browser") || "chrome",
+                        suite: "smoke"
+                    }
+                }
+            },
+            full: {
+                options: {
+                    args: {
+                        browser: grunt.option("browser") || "chrome",
+                        suite: "full"
                     }
                 }
             }
@@ -1176,26 +1184,11 @@ module.exports = function (grunt) {
         }, 1500);
     });
 
-    grunt.registerTask("test", (target, option) => {
-        if (target === "e2e") {
-            // Check if it's a remote test
-            if (
-                process.env.E2E_BASE_URL &&
-                !/^https?:\/\/localhost/.test(process.env.E2E_BASE_URL)
-            ) {
-                option = "remote";
-            }
-
-            if (option === "remote") {
-                return grunt.task.run(["protractor"]);
-            }
-
-            // not implemented, plz use remote
-            return grunt.task.run(["buildDev", "protractor"]);
-
+    grunt.registerTask("test", (option) => {
+        if (option === "smoke") {
+            return grunt.task.run(["protractor:smoke"]);
         }
-        return grunt.task.run(["force:eslint"]);
-
+        return grunt.task.run(["protractor:full"]);
     });
 
     grunt.registerTask("default", ["build"]);
@@ -1332,9 +1325,7 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.registerTask("prettier-eslint", "My prettier eslint task", (
-        done
-    ) => {
+    grunt.registerTask("prettier-eslint", "My prettier eslint task", (done) => {
         // Force task into async mode and grab a handle to the "done" function.
         // var done = this.async();
         // Run some sync stuff.
