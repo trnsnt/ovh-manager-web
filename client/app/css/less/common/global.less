@@ -1,67 +1,67 @@
 html, body {
     margin  : 0;
     padding : 0;
-  }
+}
 
-  .col-container { padding-top : @NAVBAR_HEIGHT; }
+.col-container { padding-top : @NAVBAR_HEIGHT; }
 
-  select:focus,
-  input:focus,
-  .wizard-container:focus {
-      outline: none;
-      -moz-outline: none;
-  }
+select:focus,
+input:focus,
+.wizard-container:focus {
+    outline: none;
+    -moz-outline: none;
+}
 
-  .wizard-title {
-      line-height: rem-calc(22.4);
-      margin-top: 0;
-      margin-bottom: 0;
-      color: @oui-color-zodiac;
-      font-size: rem-calc(21);
-      font-weight: @oui-font-semibold;
-      letter-spacing: .01em;
-  }
-
-  select, textarea,
-  input[type="text"],
-  input[type="password"],
-  input[type="datetime"],
-  input[type="datetime-local"],
-  input[type="date"],
-  input[type="month"],
-  input[type="time"],
-  input[type="week"],
-  input[type="number"],
-  input[type="email"],
-  input[type="url"],
-  input[type="search"],
-  input[type="tel"],
-  input[type="color"],
-  .uneditable-input{
+.wizard-title {
+    line-height: rem-calc(22.4);
+    margin-top: 0;
     margin-bottom: 0;
-  }
+    color: @oui-color-zodiac;
+    font-size: rem-calc(21);
+    font-weight: @oui-font-semibold;
+    letter-spacing: .01em;
+}
 
-  code {
-      color: @grey7;
-  }
+select, textarea,
+input[type="text"],
+input[type="password"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="week"],
+input[type="number"],
+input[type="email"],
+input[type="url"],
+input[type="search"],
+input[type="tel"],
+input[type="color"],
+.uneditable-input{
+    margin-bottom: 0;
+}
 
-  .pricing {
-      font-weight: bold;
-      color: @grey7;
-  }
+code {
+    color: @grey7;
+}
 
-  .debt-account-banner {
+.pricing {
+    font-weight: bold;
+    color: @grey7;
+}
+
+.debt-account-banner {
     .module-billing-container,
     .module-useraccount-container {
-      margin-top: -33px;
+        margin-top: -33px;
     }
-  }
+}
 
-  //
-  // MAIN CONTAINER
-  // --------------------------------------------------
+//
+// MAIN CONTAINER
+// --------------------------------------------------
 
-  .alert-account {
+.alert-account {
     margin-top: @NAVBAR_HEIGHT;
     padding: 5px 10px;
     font-size: 12px;
@@ -71,11 +71,11 @@ html, body {
     margin: 0;
 
     p {
-      margin: 0;
+        margin: 0;
     }
-  }
+}
 
-  .warning-account {
+.warning-account {
     position: absolute;
     top: 28px;
     left: 261px;
@@ -86,11 +86,11 @@ html, body {
     background-color: #FCF8E3;
     border-bottom: 1px solid #FBEED5;
     p {
-      margin: 0;
+        margin: 0;
     }
-  }
+}
 
-  .alert.me-alerts {
+.alert.me-alerts {
     display: block;
     position: relative;
     margin: 4px 0 0 0;
@@ -104,31 +104,38 @@ html, body {
         margin: 0;
     }
     .close {
-      display: none;
+            display: none;
     }
-  }
+}
 
 
-  .module-billing-sections-container,
-  .module-useraccount-sections-container {
+.module-billing-sections-container,
+.module-useraccount-sections-container {
     padding-top : 50px !important;
-  }
-  // ---
+}
+// ---
 
-  .full-height {
-      height: 100%;
-  }
+.full-height {
+    height: 100%;
+}
 
-  .title-underlined {
-      border-bottom: 1px solid @NAVBAR_BG;
-  }
+.title-underlined {
+    border-bottom: 1px solid @NAVBAR_BG;
+}
 
-  .styleless {
-      color: @NAVBAR_BG;
-      border-bottom: initial;
-  }
+.styleless {
+    color: @NAVBAR_BG;
+    border-bottom: initial;
+}
 
-  .small-blockquote {
-      color: @grey4;
-      font-size: @fontSizeMini;
-  }
+.small-blockquote {
+    color: @grey4;
+    font-size: @fontSizeMini;
+}
+
+.table > tbody > tr {
+    > td,
+    > th {
+        white-space: normal;
+    }
+}
