@@ -235,6 +235,7 @@
    <translation id="hosting_dashboard_local_referencing">Référencement local</translation>
    <translation id="hosting_dashboard_local_referencing_manage">Gérer</translation>
    <translation id="hosting_dashboard_local_referencing_order">Commander</translation>
+   <translation id="hosting_dashboard_local_referencing_visibility_check">Vérifiez votre référencement local</translation>
 
    <translation id="hosting_tab_CRON" qtlid="196660">Cron</translation>
    <translation id="hosting_tab_CRON_guide_help" qtlid="271504">Besoin d'aide pour configurer vos tâches planifiées ?</translation>
