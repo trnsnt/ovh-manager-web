@@ -1,6 +1,6 @@
 "use strict";
 
-describe("MANAGER-WEB | HOSTING | Local Referencing", function () {
+describe("MANAGER-WEB | HOSTING | Local Marketing", function () {
     var page;
 
     beforeEach(function () {
