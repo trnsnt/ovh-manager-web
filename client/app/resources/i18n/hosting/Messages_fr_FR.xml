@@ -232,10 +232,10 @@
    <translation id="hosting_dashboard_database_active_error" qtlid="260351">Une erreur est survenue lors de la demande d'activation de votre base de données privée.</translation>
    <translation id="hosting_dashboard_database_versions_error" qtlid="260364">Une erreur est survenue lors de la récupération des versions disponibles des bases de données privées.</translation>
 
-   <translation id="hosting_dashboard_local_referencing">Référencement local</translation>
-   <translation id="hosting_dashboard_local_referencing_manage">Gérer</translation>
-   <translation id="hosting_dashboard_local_referencing_order">Commander</translation>
-   <translation id="hosting_dashboard_local_referencing_visibility_check">Vérifiez votre référencement local</translation>
+   <translation id="hosting_dashboard_local_marketing">Référencement local</translation>
+   <translation id="hosting_dashboard_local_marketing_manage">Gérer</translation>
+   <translation id="hosting_dashboard_local_marketing_order">Commander</translation>
+   <translation id="hosting_dashboard_local_marketing_visibility_check">Vérifiez votre référencement local</translation>
 
    <translation id="hosting_tab_CRON" qtlid="196660">Cron</translation>
    <translation id="hosting_tab_CRON_guide_help" qtlid="271504">Besoin d'aide pour configurer vos tâches planifiées ?</translation>
@@ -312,6 +312,9 @@
    <translation id="hosting_ssl_regenerate_info" qtlid="315800">En regénérant votre certificat SSL vos changements concernant l'activation ou la désactivation de SSL sur vos multisites prendront effet à la fin de cette génération.</translation>
    <translation id="hosting_ssl_regenerate_info_warning" qtlid="315813">Attention si vous avez ajouté vos multisites récemment (2h), il est possible qu'il ne soit pas inclus dans votre certificat SSL.</translation>
    <translation id="hosting_ssl_limit_characters_info_warning" qtlid="402711">La certification gratuite n'est pas disponible pour les noms de domaines dépassant {0} caractères.</translation>
+
+   <translation id="hosting_tab_LOCAL_MARKETING">Visibilité Pro</translation>
+   <translation id="hosting_tab_LOCAL_MARKETING_table_empty">Vous n'avez pas de compte Visibilité Pro associé à votre hébergement.</translation>
 
    <translation id="hosting_tab_DATABASES_change_offer" qtlid="327302">Basculer sur un hébergement payant afin de créer une base de données. Changer d'offre rapidement et sans coupure, via le bouton</translation>
    <translation id="hosting_tab_DATABASES_table_header_name" qtlid="302041">Nom d'utilisateur</translation>

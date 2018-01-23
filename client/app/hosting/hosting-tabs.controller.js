@@ -12,7 +12,7 @@ angular.module("App").controller(
 
         $onInit () {
             this.defaultTab = "GENERAL_INFORMATIONS";
-            this.tabs = ["GENERAL_INFORMATIONS", "MULTISITE", "MODULE", "FTP", "DATABASE", "TASK"];
+            this.tabs = ["GENERAL_INFORMATIONS", "MULTISITE", "MODULE", "FTP", "LOCAL_MARKETING", "DATABASE", "TASK"];
             this.$scope.displayTabs = { cron: true, databases: true, modules: true };
 
             this.tabMenu = {
